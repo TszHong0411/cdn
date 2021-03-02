@@ -143,7 +143,7 @@ function printOTP() {
 
    pWin = window.open('','pWin');
    pWin.document.open();
-   pWin.document.write("<html><head><title>One Time Password List</title></head><style>body { font-family: courier}</style><body>");
+   pWin.document.write("<html><head><title>一次性密碼列表：</title></head><style>body { font-family: courier}</style><body>");
    pWin.document.write(escaped);
    pWin.document.write("</body></html>");
    pWin.print();
