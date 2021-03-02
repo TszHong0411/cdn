@@ -1,48 +1,50 @@
-function doWork() {
-    if (parseInt(navigator.appVersion) <= 3) { //檢查兼容的瀏覽器版本
-        alert("抱歉，瀏覽器的版本太舊了！")
-        return true;
+function doWork()
+{
+    
+		//Check for compatible browser version
+    if (parseInt(navigator.appVersion) <= 3) { 
+        alert("Sorry this only works in 4.0 browsers"); 
+        return true; 
     }
 
+		document.getElementById('passForm').listOTP.value = "";
+		document.getElementById('passForm').passPhonetic.value = "";
 
-    document.getElementById("passForm").listOTP.value = "";
-    document.getElementById('passForm').passPhonetic.value = "";
+		//Check for one time password
+		if (document.getElementById('passForm').chkOTP.checked) {
+         document.getElementById('passForm').passField.value = "";
+         var i = 0;
+         for (i=1; i<21; i++) {
+             document.getElementById('passForm').listOTP.value += i+"\t: "+GeneratePassword()+"\n";
+         }
+         document.getElementById('passForm').listOTP.focus();
+         document.getElementById('passForm').listOTP.select();
+		}
+		//generate normal password (not one time password)
+		else {
+			var Password = GeneratePassword();  
+         document.getElementById('passForm').passField.value = Password
 
-    //檢查一次密碼
-    if (document.getElementById('passForm').chkOTP.checked) {
-        document.getElementById('passForm').passField.value = "";
-        var i = 0;
-        for (i = 1; i < 21; i++) {
-            document.getElementById('passForm').listOTP.value += i + "\t: " + GeneratePassword() + "\n";
-        }
-        document.getElementById('passForm').listOTP.focus();
-        document.getElementById('passForm').listOTP.select();
-    }
-    //生成普通密碼（不是一次性密碼）
-    else {
-        var Password = GeneratePassword();
-        document.getElementById('passForm').passField.value = Password
+			//check for will be spoken
+			if (document.getElementById('passForm').option[1].checked) {
+				document.getElementById('passForm').passPhonetic.value = makePhonetic();	
+			}
 
-        //檢查是否會說出
-        if (document.getElementById('passForm').option[1].checked) {
-            document.getElementById('passForm').passPhonetic.value = makePhonetic();
-        }
-
-        document.getElementById('passForm').passField.focus();
-        document.getElementById('passForm').passField.select();
-    }
+         document.getElementById('passForm').passField.focus();
+         document.getElementById('passForm').passField.select();
+		}
 
     return true;
 }
 
 function GeneratePassword()
 {
-	//設定變數
+	//Set variables
     var length= (document.getElementById('passForm').selLength.value);
     var sPassword = "";
 	var noSpecial = (document.getElementById('passForm').option[1].checked);
 
-	//產生密碼
+	//Generate password
 	var i = 0;
     for (i=0; i < length; i++) {
         numI = getRandomNum();
@@ -110,20 +112,20 @@ function makePhonetic()
 				trans += phonArray[thisChar] + " ";
 			}
 		} else {
-			trans +="文本字段為空。 請再試一遍。";
+			trans +="The text field was empty. Please try again.";
 		}
 	} else {
-		trans +="您輸入的文本包含非法字符。 請再試一遍。";
+		trans +="The text you entered contained illegal characters. Please try again.";
 	}
 
 	return trans;
 }
 
-//打印OTP列表 
+//print the OTP list
 function printOTP() {
 	 var s = document.getElementById('passForm').listOTP.value;
 
-	 //將所有字符轉換為HTML實體
+	 //convert all chars to HTML entities
 	 var escaped="";
 	 var c="";
 	 for(var i=0; i<s.length;i++)
@@ -141,7 +143,7 @@ function printOTP() {
 
    pWin = window.open('','pWin');
    pWin.document.open();
-   pWin.document.write("<html><head><title>一次性密碼列表</title></head><style>body { font-family: courier}</style><body>");
+   pWin.document.write("<html><head><title>One Time Password List</title></head><style>body { font-family: courier}</style><body>");
    pWin.document.write(escaped);
    pWin.document.write("</body></html>");
    pWin.print();
