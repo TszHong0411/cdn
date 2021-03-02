@@ -217,11 +217,11 @@ function ShowStats()
    
    if (pass.length <= 4)
    {
-      r += "<b>WARNING:  <font color=red>非常短的密碼！ </font></b><br>\n";
+      r += "<b>警告：  <font color=red>非常短的密碼！ </font></b><br>\n";
    }
    else if (pass.length < 6)
    {
-      r += "<b>WARNING:</b>  <font color=red>短密碼！ </font><br>\n";
+      r += "<b>警告：</b>  <font color=red>短密碼！ </font><br>\n";
    }
    
    // First, see if it is a common password.
@@ -230,11 +230,11 @@ function ShowStats()
       if (Common_Words[i] == plower)
       {
          i = Common_Words.length;
-	 r += "<b>WARNING:  <font color=red>常見的密碼！ </font></b><br>\n";
+	 r += "<b>警告：  <font color=red>常見的密碼！ </font></b><br>\n";
       }
    }
    
-   r += "<b>Length:</b>  " + pass.length + "<br>\n";
+   r += "<b>長度：</b>  " + pass.length + "<br>\n";
    
    // Calculate frequency chance
    if (pass.length > 1)
@@ -252,30 +252,30 @@ function ShowStats()
       
       if (bits < 15)
       {
-         r += "<b>Strength:  <font color=red>非常弱 "+bits+"</font></b><br>\n";
+         r += "<b>強度：  <font color=red>非常弱 "+bits+"</font></b><br>\n";
 		 setProgressBarValue(bits/0.4,"yellow");
       }
       else if (bits < 20)
       {
-         r += "<b>Strength:</b>  <font color=red>弱 "+bits+"</font><br>\n";
+         r += "<b>強度：</b>  <font color=red>弱 "+bits+"</font><br>\n";
 		 setProgressBarValue(bits/0.4,"red");
       }
       else if (bits < 30)
       {
-         r += "<b>Strength:</b>  <font color=brown>合理的 "+bits+"</font><br>\n";
+         r += "<b>強度：</b>  <font color=brown>合理的 "+bits+"</font><br>\n";
 		 setProgressBarValue(bits/0.4,"brown");
       }
       else if (bits < 40)
       {
-         r += "<b>Strength:</b>  <font color=green>強 "+bits+"</font><br>\n";
+         r += "<b>強度：</b>  <font color=green>強 "+bits+"</font><br>\n";
 		 setProgressBarValue(bits/0.4,"green");
       }
       else
       {
-         r += "<b>Strength:</b>  <font color=blue>非常強 "+bits+"</font><br>\n";
+         r += "<b>強度：</b>  <font color=blue>非常強 "+bits+"</font><br>\n";
 		 setProgressBarValue(bits/0.4,"blue");
       }
-      r += "<b>Entropy:</b>  " + (Math.round(bits * 10) / 10) + " bits<br>\n";
+      r += "<b>解密的難度：</b>  " + (Math.round(bits * 10) / 10) + " bits<br>\n";
       r += "<b>字符集大小： </b>  " + Get_Charset_Size(pass) + 
          " 字符<br>\n";
    }
@@ -326,7 +326,7 @@ function CheckIfLoaded()
    
    // Loaded. Do initialization thingies.
    document.getElementById('passchk_pass').focus();
-   Set_Text("Finished Loading.");
+   Set_Text("完成加載。");
    window.setTimeout('ShowStats();', 1000);
 }
 
