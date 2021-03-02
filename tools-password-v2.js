@@ -65,6 +65,7 @@ function getRandomNum()
     return rndNum;
 }
 
+
 function checkSpecial(num) {
     if ((num >=33) && (num <=47)) { return true; }
     if ((num >=58) && (num <=64)) { return true; }    
