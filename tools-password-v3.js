@@ -34,7 +34,6 @@ function GeneratePassword()
 	//設定變數
     var length= (document.getElementById('passForm').selLength.value);
     var sPassword = "";
-	var noSpecial = (document.getElementById('passForm').option[1].checked);
 
 	//產生密碼
 	var i = 0;
