@@ -6,7 +6,7 @@ function doWork() {
 
 
     document.getElementById("passForm").listOTP.value = "";
-    document.getElementById('passForm').passPhonetic.value = "";
+    
 
     //檢查一次密碼
     if (document.getElementById('passForm').chkOTP.checked) {
@@ -22,12 +22,6 @@ function doWork() {
     else {
         var Password = GeneratePassword();
         document.getElementById('passForm').passField.value = Password
-
-        //檢查是否會說出
-        if (document.getElementById('passForm').option[1].checked) {
-            document.getElementById('passForm').passPhonetic.value = makePhonetic();
-        }
-
         document.getElementById('passForm').passField.focus();
         document.getElementById('passForm').passField.select();
     }
@@ -80,44 +74,6 @@ function checkSpecial(num) {
     return false;
 }
 
-function makePhonetic()
-{
-	var text=document.getElementById('passForm').passField.value;
-
-	var phonArray=new Array;
-	//lowercase
-	phonArray["a"]="alpha";phonArray["b"]="bravo";phonArray["c"]="charlie";phonArray["d"]="delta";phonArray["e"]="echo";phonArray["f"]="foxtrot";phonArray["g"]="golf";phonArray["h"]="hotel";phonArray["i"]="india";phonArray["j"]="juliet";phonArray["k"]="kilo";phonArray["l"]="lima";phonArray["m"]="mike";phonArray["n"]="november";phonArray["o"]="oscar";phonArray["p"]="papa";phonArray["q"]="quebec";phonArray["r"]="romeo";phonArray["s"]="sierra";phonArray["t"]="tango";phonArray["u"]="uniform";phonArray["v"]="victor";phonArray["w"]="whiskey";phonArray["x"]="x-ray";phonArray["y"]="yankee";phonArray["z"]="zulu";
-	//uppercase
-	phonArray["A"]="ALPHA";phonArray["B"]="BRAVO";phonArray["C"]="CHARLIE";phonArray["D"]="DELTA";phonArray["E"]="ECHO";phonArray["F"]="FOXTROT";phonArray["G"]="GOLF";phonArray["H"]="HOTEL";phonArray["I"]="INDIA";phonArray["J"]="JULIET";phonArray["K"]="KILO";phonArray["L"]="LIMA";phonArray["M"]="MIKE";phonArray["N"]="NOVEMBER";phonArray["O"]="OSCAR";phonArray["P"]="PAPA";phonArray["Q"]="QUEBEC";phonArray["R"]="ROMEO";phonArray["S"]="SIERRA";phonArray["T"]="TANGO";phonArray["U"]="UNIFORM";phonArray["V"]="VICTOR";phonArray["W"]="WHISKEY";phonArray["X"]="X-RAY";phonArray["Y"]="YANKEE";phonArray["Z"]="ZULU";
-	//numbers
-	phonArray["0"]="zero";phonArray["1"]="one";phonArray["2"]="two";phonArray["3"]="three";phonArray["4"]="four";phonArray["5"]="five";phonArray["6"]="six";phonArray["7"]="seven";phonArray["8"]="eight";phonArray["9"]="niner";
-	//special characters
-	phonArray["."]="dot";phonArray["-"]="dash";
-
-
-	var trans="";
-
-	var regExp=/[\!@#$%^&*(),=";:\/]/;
-	var stringCheck=regExp.exec(text);
-
-	if(!stringCheck)
-	{
-		if(text.length > 0)
-		{
-			for(var i=0;i < text.length;i++)
-			{
-				var thisChar=text.charAt(i);
-				trans += phonArray[thisChar] + " ";
-			}
-		} else {
-			trans +="文本字段為空。 請再試一遍。";
-		}
-	} else {
-		trans +="您輸入的文本包含非法字符。 請再試一遍。";
-	}
-
-	return trans;
-}
 
 //打印OTP列表 
 function printOTP() {
