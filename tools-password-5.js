@@ -1,6 +1,6 @@
 function doWork()
 {
-    
+
 		//Check for compatible browser version
     if (parseInt(navigator.appVersion) <= 3) { 
         alert("Sorry this only works in 4.0 browsers"); 
