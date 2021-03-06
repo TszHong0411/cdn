@@ -1,17 +1,17 @@
-let requests_url = 'https://hexo-fcircle-api.vercel.app/api'; //api地址
-let moments_container = document.getElementById('moments_container') ; //div容器的id
-let orign_data = []; //api請求所得到的源數據
-let maxnumber = 20; //頁面展示文章數量
-let addnumber = 10; //每次加載增加的篇數
-let opentype = '_blank';  //'_blank'打開新標簽,'_self'本窗口打開
+var requests_url = 'https://hexo-fcircle-api.vercel.app/api'; //api地址
+var moments_container = document.getElementById('moments_container') ; //div容器的id
+var orign_data = []; //api請求所得到的源數據
+var maxnumber = 20; //頁面展示文章數量
+var addnumber = 10; //每次加載增加的篇數
+var opentype = '_blank';  //'_blank'打開新標簽,'_self'本窗口打開
 
 //將html放入指定id的div容器
-let append_div = (parent, text) => {
+var append_div = (parent, text) => {
     if (typeof text === 'string') {
-        let temp = document.createElement('div');
+        var temp = document.createElement('div');
         temp.innerHTML = text;
         // 防止元素太多 進行提速
-        let frag = document.createDocumentFragment();
+        var frag = document.createDocumentFragment();
         while (temp.firstChild) {
             frag.appendChild(temp.firstChild);
         }
@@ -22,25 +22,25 @@ let append_div = (parent, text) => {
 };
 
 //去重
-let unique = (arr) => {
+var unique = (arr) => {
     return Array.from(new Set(arr))
 };
 
 //時區優化
-let formatDate = (strDate) => {
+var formatDate = (strDate) => {
     try {
-        let date = new Date(Date.parse(strDate.replace(/-/g, "/")));
-        let gettimeoffset;
+        var date = new Date(Date.parse(strDate.replace(/-/g, "/")));
+        var gettimeoffset;
         if (new Date().getTimezoneOffset()) {
             gettimeoffset = new Date().getTimezoneOffset();
         } else {
             gettimeoffset = 8;
         }
-        let timeoffset = gettimeoffset * 60 * 1000;
-        let len = date.getTime();
-        let date2 = new Date(len - timeoffset);
-        let sec = date2.getSeconds().toString();
-        let min = date2.getMinutes().toString();
+        var timeoffset = gettimeoffset * 60 * 1000;
+        var len = date.getTime();
+        var date2 = new Date(len - timeoffset);
+        var sec = date2.getSeconds().toString();
+        var min = date2.getMinutes().toString();
         if (sec.length === 1) {
             sec = "0" + sec;
         }
@@ -53,17 +53,17 @@ let formatDate = (strDate) => {
     }
 };
 
-let timezoon = (datalist_slice) => {
-    let time = datalist_slice[0][1][0][5];
+var timezoon = (datalist_slice) => {
+    var time = datalist_slice[0][1][0][5];
     return formatDate(time)
 };
 
 //今日時間
-let todaypost = () => {
-    let date = new Date();
-    let year = date.getFullYear();
-    let month = (date.getMonth() + 1).toString();
-    let day = (date.getDate()).toString();
+var todaypost = () => {
+    var date = new Date();
+    var year = date.getFullYear();
+    var month = (date.getMonth() + 1).toString();
+    var day = (date.getDate()).toString();
     if (month.length === 1) {
         month = "0" + month;
     }
@@ -74,21 +74,21 @@ let todaypost = () => {
 };
 
 //加載更多文章
-let load_more_post = () => {
+var load_more_post = () => {
     maxnumber = maxnumber + addnumber;
     moments_container.innerHTML = "";
     data_handle(orign_data, maxnumber)
 };
 
 //月份切片
-let slice_month = (data) => {
-    let monthlist = [];
-    let datalist = [];
-    let data_slice = data;
-    for (let item in data_slice) {
+var slice_month = (data) => {
+    var monthlist = [];
+    var datalist = [];
+    var data_slice = data;
+    for (var item in data_slice) {
         data_slice[item].push(item);
         if (data_slice[item][1].lenth !== 10) {
-            let list = data_slice[item][1].split('-');
+            var list = data_slice[item][1].split('-');
             if (list[1].length < 2) {
                 list[1] = "0" + list[1]
             }
@@ -97,7 +97,7 @@ let slice_month = (data) => {
             }
             data_slice[item][1] = list.join('-')
         }
-        let month = data_slice[item][1].slice(0, 7);
+        var month = data_slice[item][1].slice(0, 7);
         if (monthlist.indexOf(month) !== -1) {
             datalist[monthlist.length - 1][1].push(data_slice[item])
         } else {
@@ -105,53 +105,53 @@ let slice_month = (data) => {
             datalist.push([month, [data_slice[item]]])
         }
     }
-    for (let mounthgroup of datalist) {
+    for (var mounthgroup of datalist) {
         mounthgroup.push(mounthgroup[1][0][6]);
     }
     return datalist
 };
 
 //處理數據
-let data_handle = (data, maxnumber) => {
-    let today = todaypost();
-    let Datetody = new Date(today);
-    for (let item = 0; item < data[1].length; item++) {
-        let Datedate = new Date(data[1][item][1]);
+var data_handle = (data, maxnumber) => {
+    var today = todaypost();
+    var Datetody = new Date(today);
+    for (var item = 0; item < data[1].length; item++) {
+        var Datedate = new Date(data[1][item][1]);
         if (Datedate > Datetody) {
             data[1].splice(item--, 1);
         }
     }
-    let today_post = 0;
-    let error = 0;
-    let unique_live_link;
-    let datalist = data[1].slice(0, maxnumber);
-    let listlenth = data[1].length;
-    let user_lenth = data[0].length;
-    let datalist_slice = slice_month(datalist);
-    let last_update_time = timezoon(datalist_slice);
-    let link_list = [];
-    for (let item of data[1]) {
+    var today_post = 0;
+    var error = 0;
+    var unique_live_link;
+    var datalist = data[1].slice(0, maxnumber);
+    var listlenth = data[1].length;
+    var user_lenth = data[0].length;
+    var datalist_slice = slice_month(datalist);
+    var last_update_time = timezoon(datalist_slice);
+    var link_list = [];
+    for (var item of data[1]) {
         if (item[1] === today) {
             today_post += 1;
         }
         link_list.push(item[3]);
     }
-    let arr = unique(link_list);
+    var arr = unique(link_list);
     unique_live_link = arr.length;
-    for (let item of data[0]) {
+    for (var item of data[0]) {
         if (item[3] === 'true') {
             error += 1;
         }
     }
-    let html_item = '<h2>統計信息</h2>';
+    var html_item = '<h2>統計信息</h2>';
     html_item += '<div id="info_user_pool" class="moments-item info_user_pool" style="">';
     html_item += '<div class="moments_chart"><span class="moments_post_info_title">當前友鏈數:</span><span class="moments_post_info_number">' + user_lenth + '個</span><br><span class="moments_post_info_title">失敗數:</span><span class="moments_post_info_number">' + error + '個</span><br></div>';
     html_item += '<div class="moments_chart"><span class="moments_post_info_title">活躍友鏈數:</span><span class="moments_post_info_number">' + unique_live_link + '個</span><br><span class="moments_post_info_title">當前庫存:</span><span class="moments_post_info_number">' + listlenth + '篇</span><br></div>';
     html_item += '<div class="moments_chart"><span class="moments_post_info_title">今日更新:</span><span class="moments_post_info_number">' + today_post + '篇</span><br><span class="moments_post_info_title">最近更新:</span><span class="moments_post_info_number">' + last_update_time + '</span><br></div>';
     html_item += '</div>';
-    for (let month_item of datalist_slice) {
+    for (var month_item of datalist_slice) {
         html_item += '<h2>' + month_item[0] + '</h2>';
-        for (let post_item of month_item[1]) {
+        for (var post_item of month_item[1]) {
             html_item += ' <div class="moments-item">';
             html_item += ' <a target="' + opentype + '" class="moments-item-img" href="' + post_item[2] + '" title="' + post_item[0] + '">';
             html_item += '<img onerror="this.onerror=null,this.src=&quot;https://cdn.jsdelivr.net/gh/tszhong0411/image/404.png&quot;"';
