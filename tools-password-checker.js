@@ -18,38 +18,38 @@ var Frequency_Table = new Array();
 // So, if I had "apple apricot banana", it would compress to
 // "AappleCricotAbanana". 
 function Parse_Common_Word() {
-   var i, c, word;
+    var i, c, word;
 
-   i = 1;
-   c = Common_List.substr(i, 1);
-   while (c == c.toLowerCase() && i < Common_List.length) {
-      i++;
-      c = Common_List.substr(i, 1);
-   }
+    i = 1;
+    c = Common_List.substr(i, 1);
+    while (c == c.toLowerCase() && i < Common_List.length) {
+        i++;
+        c = Common_List.substr(i, 1);
+    }
 
-   word = Common_List.substr(0, i);
-   Common_List = Common_List.substr(i, Common_List.length);
+    word = Common_List.substr(0, i);
+    Common_List = Common_List.substr(i, Common_List.length);
 
-   if (word.substr(0, 1) == 'A') {
-      word = word.substr(1, word.length);
-   } else {
-      i = word.charCodeAt(0) - 'A'.charCodeAt(0);
-      word = Common_Words[Common_Words.length - 1].substr(0, i) +
-         word.substr(1, word.length);
-   }
+    if (word.substr(0, 1) == 'A') {
+        word = word.substr(1, word.length);
+    } else {
+        i = word.charCodeAt(0) - 'A'.charCodeAt(0);
+        word = Common_Words[Common_Words.length - 1].substr(0, i) +
+            word.substr(1, word.length);
+    }
 
-   Common_Words[Common_Words.length] = word;
+    Common_Words[Common_Words.length] = word;
 }
 
 function Parse_Common() {
-   for (var i = 0; i < 100 && Common_List.length > 0; i++) {
-      Parse_Common_Word();
-   }
-   if (Common_List.length) {
-      window.setTimeout('Parse_Common()', 20);
-   } else {
-      document.Common_Parsed = 1;
-   }
+    for (var i = 0; i < 100 && Common_List.length > 0; i++) {
+        Parse_Common_Word();
+    }
+    if (Common_List.length) {
+        window.setTimeout('Parse_Common()', 20);
+    } else {
+        document.Common_Parsed = 1;
+    }
 }
 
 // The frequency thing is a bit more interesting, but still not too complex.
@@ -61,225 +61,231 @@ function Parse_Common() {
 // so on.  If you decrypt the table successfully, you should see a really large
 // number for "qu".
 function Parse_Frequency_Token() {
-   var c;
+    var c;
 
-   c = Frequency_List.charCodeAt(0) - ' '.charCodeAt(0);
-   c /= 95;
-   c += Frequency_List.charCodeAt(1) - ' '.charCodeAt(0);
-   c /= 95;
-   c += Frequency_List.charCodeAt(2) - ' '.charCodeAt(0);
-   c /= 95;
+    c = Frequency_List.charCodeAt(0) - ' '.charCodeAt(0);
+    c /= 95;
+    c += Frequency_List.charCodeAt(1) - ' '.charCodeAt(0);
+    c /= 95;
+    c += Frequency_List.charCodeAt(2) - ' '.charCodeAt(0);
+    c /= 95;
 
-   Frequency_List = Frequency_List.substr(3, Frequency_List.length);
+    Frequency_List = Frequency_List.substr(3, Frequency_List.length);
 
-   Frequency_Table[Frequency_Table.length] = c;
+    Frequency_Table[Frequency_Table.length] = c;
 }
 
 
 function Parse_Frequency() {
-   for (var i = 0; i < 100 && Frequency_List.length > 0; i++) {
-      Parse_Frequency_Token();
-   }
-   if (Frequency_List.length) {
-      window.setTimeout('Parse_Frequency()', 20);
-   } else {
-      document.Frequency_Parsed = 1;
-   }
+    for (var i = 0; i < 100 && Frequency_List.length > 0; i++) {
+        Parse_Frequency_Token();
+    }
+    if (Frequency_List.length) {
+        window.setTimeout('Parse_Frequency()', 20);
+    } else {
+        document.Frequency_Parsed = 1;
+    }
 }
 
 
 function Get_Index(c) {
-   c = c.charAt(0).toLowerCase();
-   if (c < 'a' || c > 'z') {
-      return 0;
-   }
-   return c.charCodeAt(0) - 'a'.charCodeAt(0) + 1;
+    c = c.charAt(0).toLowerCase();
+    if (c < 'a' || c > 'z') {
+        return 0;
+    }
+    return c.charCodeAt(0) - 'a'.charCodeAt(0) + 1;
 }
 
 
 function Get_Charset_Size(pass) {
-   var a = 0,
-      u = 0,
-      n = 0,
-      ns = 0,
-      r = 0,
-      sp = 0,
-      s = 0,
-      chars = 0;
+    var a = 0,
+        u = 0,
+        n = 0,
+        ns = 0,
+        r = 0,
+        sp = 0,
+        s = 0,
+        chars = 0;
 
-   for (var i = 0; i < pass.length; i++) {
-      var c = pass.charAt(i);
+    for (var i = 0; i < pass.length; i++) {
+        var c = pass.charAt(i);
 
-      if (a == 0 && 'abcdefghijklmnopqrstuvwxyz'.indexOf(c) >= 0) {
-         chars += 26;
-         a = 1;
-      }
-      if (u == 0 && 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(c) >= 0) {
-         chars += 26;
-         u = 1;
-      }
-      if (n == 0 && '0123456789'.indexOf(c) >= 0) {
-         chars += 10;
-         n = 1;
-      }
-      if (ns == 0 && '!@#$%^&*()'.indexOf(c) >= 0) {
-         chars += 10;
-         ns = 1;
-      }
-      if (r == 0 && "`~-_=+[{]}\\|;:'\",<.>/?".indexOf(c) >= 0) {
-         chars += 20;
-         r = 1;
-      }
-      if (sp == 0 && c == ' ') {
-         chars += 1;
-         sp = 1;
-      }
-      if (s == 0 && (c < ' ' || c > '~')) {
-         chars += 32 + 128;
-         s = 1;
-      }
-   }
+        if (a == 0 && 'abcdefghijklmnopqrstuvwxyz'.indexOf(c) >= 0) {
+            chars += 26;
+            a = 1;
+        }
+        if (u == 0 && 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.indexOf(c) >= 0) {
+            chars += 26;
+            u = 1;
+        }
+        if (n == 0 && '0123456789'.indexOf(c) >= 0) {
+            chars += 10;
+            n = 1;
+        }
+        if (ns == 0 && '!@#$%^&*()'.indexOf(c) >= 0) {
+            chars += 10;
+            ns = 1;
+        }
+        if (r == 0 && "`~-_=+[{]}\\|;:'\",<.>/?".indexOf(c) >= 0) {
+            chars += 20;
+            r = 1;
+        }
+        if (sp == 0 && c == ' ') {
+            chars += 1;
+            sp = 1;
+        }
+        if (s == 0 && (c < ' ' || c > '~')) {
+            chars += 32 + 128;
+            s = 1;
+        }
+    }
 
-   window.status = chars;
-   return chars;
+    window.status = chars;
+    return chars;
 }
 
 
 function Set_Text(s) {
-   var e;
+    var e;
 
-   if (!document.getElementById) {
-      return;
-   }
+    if (!document.getElementById) {
+        return;
+    }
 
-   e = document.getElementById('passchk_result');
-   if (!e) {
-      return;
-   }
+    e = document.getElementById('passchk_result');
+    if (!e) {
+        return;
+    }
 
-   if (e.innerHTML == s) {
-      return;
-   }
+    if (e.innerHTML == s) {
+        return;
+    }
 
-   e.innerHTML = s;
+    e.innerHTML = s;
 }
 
 
 var OldPass = -1;
 
 function ShowStats() {
-   if (document.getElementById('passchk_pass')) {
-      var pass = document.getElementById('passchk_pass').value;
-   }
-   var plower = pass.toLowerCase();
-   var r = "";
-   strength = 0;
-   strength_colour = "red";
+    if (document.getElementById('passchk_pass')) {
+        var pass = document.getElementById('passchk_pass').value;
+        var plower = pass.toLowerCase();
+    }
+    var r = "";
+    strength = 0;
+    strength_colour = "red";
 
-   if (pass == OldPass) {
-      window.setTimeout('ShowStats();', 200);
-      return;
-   }
-   OldPass = pass;
+    if (pass == OldPass) {
+        window.setTimeout('ShowStats();', 200);
+        return;
+    }
+    OldPass = pass;
 
-   if (pass.length == 0) {
-      Set_Text("請輸入您的密碼，<br />分析將自動開始。");
-      hideBar();
-      window.setTimeout('ShowStats();', 200);
-      return;
-   } else {
-      showBar();
-   }
+    if (document.getElementById('passchk_pass')) {
+        if (pass.length == 0) {
+            Set_Text("請輸入您的密碼，<br />分析將自動開始。");
+            hideBar();
+            window.setTimeout('ShowStats();', 200);
+            return;
+        } else {
+            showBar();
+        }
+    
 
-   if (pass.length <= 4) {
-      r += "<b>警告：  <font color=red>非常短的密碼！ </font></b><br>\n";
-   } else if (pass.length < 6) {
-      r += "<b>警告：</b>  <font color=red>短密碼！ </font><br>\n";
-   }
+        if (pass.length <= 4) {
+            r += "<b>警告：  <font color=red>非常短的密碼！ </font></b><br>\n";
+        } else if (pass.length < 6) {
+            r += "<b>警告：</b>  <font color=red>短密碼！ </font><br>\n";
+        }
 
-   // First, see if it is a common password.
-   for (var i = 0; i < Common_Words.length; i++) {
-      if (Common_Words[i] == plower) {
-         i = Common_Words.length;
-         r += "<b>警告：  <font color=red>常見的密碼！ </font></b><br>\n";
-      }
-   }
+    }
 
-   r += "<b>長度：</b>  " + pass.length + "<br>\n";
+    // First, see if it is a common password.
+    for (var i = 0; i < Common_Words.length; i++) {
+        if (Common_Words[i] == plower) {
+            i = Common_Words.length;
+            r += "<b>警告：  <font color=red>常見的密碼！ </font></b><br>\n";
+        }
+    }
 
-   // Calculate frequency chance
-   if (pass.length > 1) {
-      var c, aidx = 0,
-         bits = 0,
-         charSet;
-      charSet = Math.log(Get_Charset_Size(pass));
-      aidx = Get_Index(plower.charAt(0));
-      for (var b = 1; b < plower.length; b++) {
-         var bidx = Get_Index(plower.charAt(b));
-         c = 1.0 - Frequency_Table[aidx * 27 + bidx];
-         bits += charSet * c * c; // Squared = assmume they are good guessers
-         aidx = bidx;
-      }
+    if (document.getElementById('passchk_pass')) {
+        r += "<b>長度：</b>  " + pass.length + "<br>\n";
+    
 
-      if (bits < 15) {
-         r += "<b>強度：  <font color=red>非常弱 " + bits + "</font></b><br>\n";
-         setProgressBarValue(bits / 0.4, "yellow");
-      } else if (bits < 20) {
-         r += "<b>強度：</b>  <font color=red>弱 " + bits + "</font><br>\n";
-         setProgressBarValue(bits / 0.4, "red");
-      } else if (bits < 30) {
-         r += "<b>強度：</b>  <font color=brown>合理的 " + bits + "</font><br>\n";
-         setProgressBarValue(bits / 0.4, "brown");
-      } else if (bits < 40) {
-         r += "<b>強度：</b>  <font color=green>強 " + bits + "</font><br>\n";
-         setProgressBarValue(bits / 0.4, "green");
-      } else {
-         r += "<b>強度：</b>  <font color=blue>非常強 " + bits + "</font><br>\n";
-         setProgressBarValue(bits / 0.4, "blue");
-      }
-      r += "<b>解密的難度：</b>  " + (Math.round(bits * 10) / 10) + " bits<br>\n";
-      r += "<b>字符集大小： </b>  " + Get_Charset_Size(pass) +
-         " 字符<br>\n";
-   }
+    // Calculate frequency chance
+    if (pass.length > 1) {
+        var c, aidx = 0,
+            bits = 0,
+            charSet;
+        charSet = Math.log(Get_Charset_Size(pass));
+        aidx = Get_Index(plower.charAt(0));
+        for (var b = 1; b < plower.length; b++) {
+            var bidx = Get_Index(plower.charAt(b));
+            c = 1.0 - Frequency_Table[aidx * 27 + bidx];
+            bits += charSet * c * c; // Squared = assmume they are good guessers
+            aidx = bidx;
+        }
 
-   Set_Text(r);
+        if (bits < 15) {
+            r += "<b>強度：  <font color=red>非常弱 " + bits + "</font></b><br>\n";
+            setProgressBarValue(bits / 0.4, "yellow");
+        } else if (bits < 20) {
+            r += "<b>強度：</b>  <font color=red>弱 " + bits + "</font><br>\n";
+            setProgressBarValue(bits / 0.4, "red");
+        } else if (bits < 30) {
+            r += "<b>強度：</b>  <font color=brown>合理的 " + bits + "</font><br>\n";
+            setProgressBarValue(bits / 0.4, "brown");
+        } else if (bits < 40) {
+            r += "<b>強度：</b>  <font color=green>強 " + bits + "</font><br>\n";
+            setProgressBarValue(bits / 0.4, "green");
+        } else {
+            r += "<b>強度：</b>  <font color=blue>非常強 " + bits + "</font><br>\n";
+            setProgressBarValue(bits / 0.4, "blue");
+        }
+        r += "<b>解密的難度：</b>  " + (Math.round(bits * 10) / 10) + " bits<br>\n";
+        r += "<b>字符集大小： </b>  " + Get_Charset_Size(pass) +
+            " 字符<br>\n";
+    }
+    }
+    Set_Text(r);
 
-   window.setTimeout('ShowStats();', 200);
+    window.setTimeout('ShowStats();', 200);
 }
 
 
 function CheckIfLoaded() {
-   var s = "";
-   if (!document.Common_Loaded) {
-      s += "正在加載常用密碼...<br>\n";
-   } else if (!document.Common_Parsed) {
-      if (!document.Common_Parsed_Started) {
-         window.setTimeout('Parse_Common()', 50);
-         document.Common_Parsed_Started = 1;
-      }
-      s += "解析常用密碼... " +
-         Common_List.length + "<br>\n";
-   }
-   if (!document.Frequency_Loaded) {
-      s += "正在加載字母頻率表... <br>\n";
-   } else if (!document.Frequency_Parsed) {
-      if (!document.Frequency_Parsed_Started) {
-         window.setTimeout('Parse_Frequency()', 50);
-         document.Frequency_Parsed_Started = 1;
-      }
-      s += "解析頻率表..." +
-         Frequency_List.length + "<br>\n";
-   }
-   if (s != "") {
-      Set_Text(s + "加載中 ...");
-      window.setTimeout('CheckIfLoaded()', 200);
-      return;
-   }
+    var s = "";
+    if (!document.Common_Loaded) {
+        s += "正在加載常用密碼...<br>\n";
+    } else if (!document.Common_Parsed) {
+        if (!document.Common_Parsed_Started) {
+            window.setTimeout('Parse_Common()', 50);
+            document.Common_Parsed_Started = 1;
+        }
+        s += "解析常用密碼... " +
+            Common_List.length + "<br>\n";
+    }
+    if (!document.Frequency_Loaded) {
+        s += "正在加載字母頻率表... <br>\n";
+    } else if (!document.Frequency_Parsed) {
+        if (!document.Frequency_Parsed_Started) {
+            window.setTimeout('Parse_Frequency()', 50);
+            document.Frequency_Parsed_Started = 1;
+        }
+        s += "解析頻率表..." +
+            Frequency_List.length + "<br>\n";
+    }
+    if (s != "") {
+        Set_Text(s + "加載中 ...");
+        window.setTimeout('CheckIfLoaded()', 200);
+        return;
+    }
 
-   // Loaded. Do initialization thingies.
-   document.getElementById('passchk_pass').focus();
-   Set_Text("完成加載。");
-   window.setTimeout('ShowStats();', 1000);
+    // Loaded. Do initialization thingies.
+    document.getElementById('passchk_pass').focus();
+    Set_Text("完成加載。");
+    window.setTimeout('ShowStats();', 1000);
 }
 
 window.setTimeout('CheckIfLoaded()', 100);
@@ -287,99 +293,99 @@ window.setTimeout('CheckIfLoaded()', 100);
 
 // Ads eventhandelr to given object
 function addEvent(obj, evType, fn) {
-   if (obj.addEventListener) {
-      obj.addEventListener(evType, fn, false);
-      return true;
-   } else if (obj.attachEvent) {
-      var r = obj.attachEvent("on" + evType, fn);
-      return r;
-   } else {
-      return false;
-   }
+    if (obj.addEventListener) {
+        obj.addEventListener(evType, fn, false);
+        return true;
+    } else if (obj.attachEvent) {
+        var r = obj.attachEvent("on" + evType, fn);
+        return r;
+    } else {
+        return false;
+    }
 }
 
 //add Elements to qualitymeter div
 function initProgressBar(caption) {
-   var _container = document.getElementById("the_progressbar");
-   if (_container) {
-      _currentStyle = _container.style;
-      if (_currentStyle != null) {
-         _currentStyle.display = "block";
-      }
+    var _container = document.getElementById("the_progressbar");
+    if (_container) {
+        _currentStyle = _container.style;
+        if (_currentStyle != null) {
+            _currentStyle.display = "block";
+        }
 
-      // create the caption
-      var _caption = document.createElement("span");
-      _caption.id = "progress_caption";
-      var _text = document.createTextNode(caption);
-      _caption.setAttribute("style", "{font-weight: bold;}");
-      _caption.appendChild(_text);
-      _caption.appendChild(document.createElement("br"));
-      _container.appendChild(_caption);
+        // create the caption
+        var _caption = document.createElement("span");
+        _caption.id = "progress_caption";
+        var _text = document.createTextNode(caption);
+        _caption.setAttribute("style", "{font-weight: bold;}");
+        _caption.appendChild(_text);
+        _caption.appendChild(document.createElement("br"));
+        _container.appendChild(_caption);
 
-      //Create The Left progress part
-      //Looks like <span class="right" style="border: 1px solid black; padding: 0 50px; height: 1.2em; background-color: green;">
-      var _progressL = document.createElement("span");
-      _progressL.id = "progressl";
-      var _style = _progressL.style;
-      _style.backgroundColor = "green";
-      _style.borderLeft = "1px solid black";
-      _style.borderTop = "1px solid black";
-      _style.borderBottom = "1px solid black";
-      _style.padding = "0 0px";
-      _style.height = "1.2em";
-      _style.zIndex = 100;
+        //Create The Left progress part
+        //Looks like <span class="right" style="border: 1px solid black; padding: 0 50px; height: 1.2em; background-color: green;">
+        var _progressL = document.createElement("span");
+        _progressL.id = "progressl";
+        var _style = _progressL.style;
+        _style.backgroundColor = "green";
+        _style.borderLeft = "1px solid black";
+        _style.borderTop = "1px solid black";
+        _style.borderBottom = "1px solid black";
+        _style.padding = "0 0px";
+        _style.height = "1.2em";
+        _style.zIndex = 100;
 
-      _container.appendChild(_progressL);
+        _container.appendChild(_progressL);
 
-      // Create the Rigth progress part 
-      // Looks like Left part, but background is transparent
-      var _progressR = document.createElement("span");
-      _progressR.id = "progressr";
-      _style = _progressR.style;
-      _style.borderRight = "1px solid black";
-      _style.borderTop = "1px solid black";
-      _style.borderBottom = "1px solid black";
-      _style.padding = "0 100px";
-      _style.height = "1.2em";
+        // Create the Rigth progress part 
+        // Looks like Left part, but background is transparent
+        var _progressR = document.createElement("span");
+        _progressR.id = "progressr";
+        _style = _progressR.style;
+        _style.borderRight = "1px solid black";
+        _style.borderTop = "1px solid black";
+        _style.borderBottom = "1px solid black";
+        _style.padding = "0 100px";
+        _style.height = "1.2em";
 
-      _container.appendChild(_progressR);
-   }
+        _container.appendChild(_progressR);
+    }
 }
 
 function setProgressBarValue(value, colour) {
-   var _value = parseInt(value);
-   if (_value == NaN)
-      _value = 0;
+    var _value = parseInt(value);
+    if (_value == NaN)
+        _value = 0;
 
-   if (_value > 100)
-      _value = 100;
+    if (_value > 100)
+        _value = 100;
 
-   if (colour == NaN)
-      colour = "green";
+    if (colour == NaN)
+        colour = "green";
 
-   _progressL = document.getElementById("progressl");
-   _progressR = document.getElementById("progressr");
-   if (_progressL && _progressR) {
-      _progressL.style.paddingLeft = _value + "px";
-      _progressL.style.backgroundColor = colour;
-      _progressL.style.paddingRight = _value + "px";
-      _progressR.style.paddingLeft = (100 - _value) + "px";
-      _progressR.style.paddingRight = (100 - _value) + "px";
-   }
+    _progressL = document.getElementById("progressl");
+    _progressR = document.getElementById("progressr");
+    if (_progressL && _progressR) {
+        _progressL.style.paddingLeft = _value + "px";
+        _progressL.style.backgroundColor = colour;
+        _progressL.style.paddingRight = _value + "px";
+        _progressR.style.paddingLeft = (100 - _value) + "px";
+        _progressR.style.paddingRight = (100 - _value) + "px";
+    }
 }
 
 function hideBar() {
-   var _container = document.getElementById("the_progressbar");
-   _container.style.display = "none";
+    var _container = document.getElementById("the_progressbar");
+    _container.style.display = "none";
 }
 
 function showBar() {
-   var _container = document.getElementById("the_progressbar");
-   _container.style.display = "";
+    var _container = document.getElementById("the_progressbar");
+    _container.style.display = "";
 }
 
 function initQualityMeter() {
-   initProgressBar("密碼質量： ");
-   setProgressBarValue(0, "red");
-   hideBar();
+    initProgressBar("密碼質量： ");
+    setProgressBarValue(0, "red");
+    hideBar();
 }
