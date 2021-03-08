@@ -184,9 +184,8 @@ fetch(requests_url).then(
     }
 )
 
-setTimeout(function(){while (true) {
-    if (document.getElementById("info_user_pool")) {
-        document.getElementById("loaderOfFcircle").style.display = "none";
-        break;
-    }
-}},1500)
+setTimeout(
+$(document).ready(functon() {
+    $('#loaderOfFcircle').css('display','none');
+    $('#moments_container').css('display','block');
+ }),1000);
