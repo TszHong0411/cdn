@@ -183,6 +183,9 @@ fetch(requests_url).then(
         data_handle(orign_data, maxnumber)
     }
 )
-if (document.getElementById("info_user_pool")) {
-    document.getElementById("loaderOfFcircle").style.display = "none";
+while (true) {
+    if (document.getElementById("info_user_pool")) {
+        document.getElementById("loaderOfFcircle").style.display = "none";
+        break;
+    }
 }
