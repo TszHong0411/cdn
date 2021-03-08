@@ -183,9 +183,3 @@ fetch(requests_url).then(
         data_handle(orign_data, maxnumber)
     }
 )
-
-setTimeout(
-$(document).ready(functon() {
-    $('#loaderOfFcircle').css('display','none');
-    $('#moments_container').css('display','block');
- }),1000);
