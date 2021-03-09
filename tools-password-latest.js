@@ -1,154 +1,138 @@
-function doWork()
-{
-
-		//Check for compatible browser version
-    if (parseInt(navigator.appVersion) <= 3) { 
-        alert("Sorry this only works in 4.0 browsers"); 
-        return true; 
-    }
-
-		document.getElementById('passForm').listOTP.value = "";
-		document.getElementById('passForm').passPhonetic.value = "";
-
-		//Check for one time password
-		if (document.getElementById('passForm').chkOTP.checked) {
-         document.getElementById('passForm').passField.value = "";
-         var i = 0;
-         for (i=1; i<21; i++) {
-             document.getElementById('passForm').listOTP.value += i+"\t: "+GeneratePassword()+"\n";
-         }
-         document.getElementById('passForm').listOTP.focus();
-         document.getElementById('passForm').listOTP.select();
-		}
-		//generate normal password (not one time password)
-		else {
-			var Password = GeneratePassword();  
-         document.getElementById('passForm').passField.value = Password
-
-			//check for will be spoken
-			if (document.getElementById('passForm').option[1].checked) {
-				document.getElementById('passForm').passPhonetic.value = makePhonetic();	
-			}
-
-         document.getElementById('passForm').passField.focus();
-         document.getElementById('passForm').passField.select();
-		}
-
-    return true;
+const sliderProps = {
+	fill: "#0B1EDF",
+	background: "rgba(255, 255, 255, 0.214)",
+};
+const slider = document.querySelector(".range__slider");
+const sliderValue = document.querySelector(".length__title");
+slider.querySelector("input").addEventListener("input", event => {
+	sliderValue.setAttribute("data-length", event.target.value);
+	applyFill(event.target);
+});
+applyFill(slider.querySelector("input"));
+function applyFill(slider) {
+	const percentage = (100 * (slider.value - slider.min)) / (slider.max - slider.min);
+	const bg = `linear-gradient(90deg, ${sliderProps.fill} ${percentage}%, ${sliderProps.background} ${percentage +
+			0.1}%)`;
+	slider.style.background = bg;
+	sliderValue.setAttribute("data-length", slider.value);
 }
-
-function GeneratePassword()
-{
-	//Set variables
-    var length= (document.getElementById('passForm').selLength.value);
-    var sPassword = "";
-	var noSpecial = (document.getElementById('passForm').option[1].checked);
-
-	//Generate password
-	var i = 0;
-    for (i=0; i < length; i++) {
-        numI = getRandomNum();
-				if (noSpecial) {
-					while (checkSpecial(numI)) {
-						numI = getRandomNum();
-					}
-				}
-        sPassword = sPassword + String.fromCharCode(numI);
-    }
-
-		return sPassword;
+const randomFunc = {
+	lower: getRandomLower,
+	upper: getRandomUpper,
+	number: getRandomNumber,
+	symbol: getRandomSymbol,
+};
+function secureMathRandom() {
+	return window.crypto.getRandomValues(new Uint32Array(1))[0] / (Math.pow(2, 32) - 1);
 }
-
-function getRandomNum()
-{
-    // between 0 - 1
-    var rndNum = Math.random()
-
-    // rndNum from 0 - 1000    
-    rndNum = parseInt(rndNum * 1000);
-
-    // rndNum from 33 - 127        
-    rndNum = (rndNum % 94) + 33;
-            
-    return rndNum;
+function getRandomLower() {
+	return String.fromCharCode(Math.floor(Math.random() * 26) + 97);
 }
-
-function checkSpecial(num) {
-    if ((num >=33) && (num <=47)) { return true; }
-    if ((num >=58) && (num <=64)) { return true; }    
-    if ((num >=91) && (num <=96)) { return true; }
-    if ((num >=123) && (num <=126)) { return true; }
-    
-    return false;
+function getRandomUpper() {
+	return String.fromCharCode(Math.floor(Math.random() * 26) + 65);
 }
-
-function makePhonetic()
-{
-	var text=document.getElementById('passForm').passField.value;
-
-	var phonArray=new Array;
-	//lowercase
-	phonArray["a"]="alpha";phonArray["b"]="bravo";phonArray["c"]="charlie";phonArray["d"]="delta";phonArray["e"]="echo";phonArray["f"]="foxtrot";phonArray["g"]="golf";phonArray["h"]="hotel";phonArray["i"]="india";phonArray["j"]="juliet";phonArray["k"]="kilo";phonArray["l"]="lima";phonArray["m"]="mike";phonArray["n"]="november";phonArray["o"]="oscar";phonArray["p"]="papa";phonArray["q"]="quebec";phonArray["r"]="romeo";phonArray["s"]="sierra";phonArray["t"]="tango";phonArray["u"]="uniform";phonArray["v"]="victor";phonArray["w"]="whiskey";phonArray["x"]="x-ray";phonArray["y"]="yankee";phonArray["z"]="zulu";
-	//uppercase
-	phonArray["A"]="ALPHA";phonArray["B"]="BRAVO";phonArray["C"]="CHARLIE";phonArray["D"]="DELTA";phonArray["E"]="ECHO";phonArray["F"]="FOXTROT";phonArray["G"]="GOLF";phonArray["H"]="HOTEL";phonArray["I"]="INDIA";phonArray["J"]="JULIET";phonArray["K"]="KILO";phonArray["L"]="LIMA";phonArray["M"]="MIKE";phonArray["N"]="NOVEMBER";phonArray["O"]="OSCAR";phonArray["P"]="PAPA";phonArray["Q"]="QUEBEC";phonArray["R"]="ROMEO";phonArray["S"]="SIERRA";phonArray["T"]="TANGO";phonArray["U"]="UNIFORM";phonArray["V"]="VICTOR";phonArray["W"]="WHISKEY";phonArray["X"]="X-RAY";phonArray["Y"]="YANKEE";phonArray["Z"]="ZULU";
-	//numbers
-	phonArray["0"]="zero";phonArray["1"]="one";phonArray["2"]="two";phonArray["3"]="three";phonArray["4"]="four";phonArray["5"]="five";phonArray["6"]="six";phonArray["7"]="seven";phonArray["8"]="eight";phonArray["9"]="niner";
-	//special characters
-	phonArray["."]="dot";phonArray["-"]="dash";
-
-
-	var trans="";
-
-	var regExp=/[\!@#$%^&*(),=";:\/]/;
-	var stringCheck=regExp.exec(text);
-
-	if(!stringCheck)
-	{
-		if(text.length > 0)
-		{
-			for(var i=0;i < text.length;i++)
-			{
-				var thisChar=text.charAt(i);
-				trans += phonArray[thisChar] + " ";
-			}
-		} else {
-			trans +="The text field was empty. Please try again.";
-		}
-	} else {
-		trans +="The text you entered contained illegal characters. Please try again.";
+function getRandomNumber() {
+	return String.fromCharCode(Math.floor(secureMathRandom() * 10) + 48);
+}
+function getRandomSymbol() {
+	const symbols = '~!@#$%^&*()_+{}":?><;.,';
+	return symbols[Math.floor(Math.random() * symbols.length)];
+}
+const resultEl = document.getElementById("result");
+const lengthEl = document.getElementById("slider");
+const uppercaseEl = document.getElementById("uppercase");
+const lowercaseEl = document.getElementById("lowercase");
+const numberEl = document.getElementById("number");
+const symbolEl = document.getElementById("symbol");
+const generateBtn = document.getElementById("generate");
+const copyBtn = document.getElementById("copy-btn");
+const resultContainer = document.querySelector(".result");
+const copyInfo = document.querySelector(".result__info.right");
+const copiedInfo = document.querySelector(".result__info.left");
+let generatedPassword = false;
+let resultContainerBound = {
+	left: resultContainer.getBoundingClientRect().left,
+	top: resultContainer.getBoundingClientRect().top,
+};
+resultContainer.addEventListener("mousemove", e => {
+	resultContainerBound = {
+		left: resultContainer.getBoundingClientRect().left,
+		top: resultContainer.getBoundingClientRect().top,
+	};
+	if(generatedPassword){
+		copyBtn.style.opacity = '1';
+		copyBtn.style.pointerEvents = 'all';
+		copyBtn.style.setProperty("--x", `${e.x - resultContainerBound.left}px`);
+		copyBtn.style.setProperty("--y", `${e.y - resultContainerBound.top}px`);
+	}else{
+		copyBtn.style.opacity = '0';
+		copyBtn.style.pointerEvents = 'none';
 	}
-
-	return trans;
+});
+window.addEventListener("resize", e => {
+	resultContainerBound = {
+		left: resultContainer.getBoundingClientRect().left,
+		top: resultContainer.getBoundingClientRect().top,
+	};
+});
+copyBtn.addEventListener("click", () => {
+	const textarea = document.createElement("textarea");
+	const password = resultEl.innerText;
+	if (!password || password == "CLICK GENERATE") {
+		return;
+	}
+	textarea.value = password;
+	document.body.appendChild(textarea);
+	textarea.select();
+	document.execCommand("copy");
+	textarea.remove();
+	copyInfo.style.transform = "translateY(200%)";
+	copyInfo.style.opacity = "0";
+	copiedInfo.style.transform = "translateY(0%)";
+	copiedInfo.style.opacity = "0.75";
+});
+generateBtn.addEventListener("click", () => {
+	const length = +lengthEl.value;
+	const hasLower = lowercaseEl.checked;
+	const hasUpper = uppercaseEl.checked;
+	const hasNumber = numberEl.checked;
+	const hasSymbol = symbolEl.checked;
+	generatedPassword = true;
+	resultEl.innerText = generatePassword(length, hasLower, hasUpper, hasNumber, hasSymbol);
+	copyInfo.style.transform = "translateY(0%)";
+	copyInfo.style.opacity = "0.75";
+	copiedInfo.style.transform = "translateY(200%)";
+	copiedInfo.style.opacity = "0";
+});
+function generatePassword(length, lower, upper, number, symbol) {
+	let generatedPassword = "";
+	const typesCount = lower + upper + number + symbol;
+	const typesArr = [{ lower }, { upper }, { number }, { symbol }].filter(item => Object.values(item)[0]);
+	if (typesCount === 0) {
+		return "";
+	}
+	for (let i = 0; i < length; i++) {
+		typesArr.forEach(type => {
+			const funcName = Object.keys(type)[0];
+			generatedPassword += randomFunc[funcName]();
+		});
+	}
+	return generatedPassword.slice(0, length)
+									.split('').sort(() => Math.random() - 0.5)
+									.join('');
 }
-
-//print the OTP list
-function printOTP() {
-	 var s = document.getElementById('passForm').listOTP.value;
-
-	 //convert all chars to HTML entities
-	 var escaped="";
-	 var c="";
-	 for(var i=0; i<s.length;i++)
-	 {
-			c = s.charAt(i);
-			if (c == '\n') {
-				 escaped += "<br />\n";
-			} else {
-				 c = c.charCodeAt(0);
-				 //c = 'x'+ c.toString(16);
-				 c = '&#'+ c + ';'
-				 escaped += c;
-			}
-	 }
-
-   pWin = window.open('','pWin');
-   pWin.document.open();
-   pWin.document.write("<html><head><title>一次性密碼列表：</title></head><style>body { font-family: courier}</style><body>");
-   pWin.document.write(escaped);
-   pWin.document.write("</body></html>");
-   pWin.print();
-   pWin.document.close();
-   pWin.close(); 
-	 return true;
+function disableOnlyCheckbox(){
+	let totalChecked = [uppercaseEl, lowercaseEl, numberEl, symbolEl].filter(el => el.checked)
+	totalChecked.forEach(el => {
+		if(totalChecked.length == 1){
+			el.disabled = true;
+		}else{
+			el.disabled = false;
+		}
+	})
 }
-// end
+[uppercaseEl, lowercaseEl, numberEl, symbolEl].forEach(el => {
+	el.addEventListener('click', () => {
+		disableOnlyCheckbox()
+	})
+})
